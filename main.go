@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/Sibilance/mvis2/analyze"
 	"github.com/ebitengine/oto/v3"
 	"github.com/hajimehoshi/go-mp3"
 )
@@ -41,7 +42,9 @@ func main() {
 	}
 	<-readyChan
 
-	player := otoCtx.NewPlayer(decodedMp3)
+	analyzer := analyze.NewAnalyzer(decodedMp3, op)
+
+	player := otoCtx.NewPlayer(analyzer)
 	defer player.Close()
 	player.Play()
 	for player.IsPlaying() {
