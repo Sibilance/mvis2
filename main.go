@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"os"
 	"time"
 
@@ -12,6 +13,8 @@ import (
 	"github.com/ebitengine/oto/v3"
 	"github.com/hajimehoshi/go-mp3"
 )
+
+const MaxInt16 = float32(math.MaxInt16)
 
 type SampleExtractor struct {
 	reader                  io.Reader
@@ -32,14 +35,14 @@ func (se SampleExtractor) Read(p []byte) (n int, err error) {
 		sampleIndex := i << 2
 		se.leftBuffer[i] = float32(
 			int16(
-				uint16(p[sampleIndex]) | uint16(p[sampleIndex+1])<<8,
+				uint16(p[sampleIndex])|uint16(p[sampleIndex+1])<<8,
 			),
-		)
+		) / MaxInt16
 		se.rightBuffer[i] = float32(
 			int16(
-				uint16(p[sampleIndex+2]) | uint16(p[sampleIndex+3])<<8,
+				uint16(p[sampleIndex+2])|uint16(p[sampleIndex+3])<<8,
 			),
-		)
+		) / MaxInt16
 	}
 	se.analyzer.Analyze(se.leftBuffer, se.rightBuffer)
 	return
