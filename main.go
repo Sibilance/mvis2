@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -75,7 +76,7 @@ func main() {
 	}
 	<-readyChan
 
-	analyzer := &analyze.Analyzer{}
+	analyzer := analyze.NewAnalyzer()
 	sampleExtractor := SampleExtractor{
 		reader:   mp3Decoder,
 		analyzer: analyzer,
@@ -85,7 +86,7 @@ func main() {
 	defer player.Close()
 	player.Play()
 	for player.IsPlaying() {
-		player.BufferedSize()
-		time.Sleep(time.Millisecond)
+		fmt.Println(analyzer.LeftProbes[0].Buffer)
+		time.Sleep(100 * time.Millisecond)
 	}
 }
