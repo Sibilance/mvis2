@@ -6,6 +6,7 @@ import (
 	"log"
 	"math"
 	"os"
+	"time"
 
 	"github.com/Sibilance/mvis2/analyze"
 	"github.com/Sibilance/mvis2/display"
@@ -72,6 +73,7 @@ func main() {
 	op.SampleRate = mp3Decoder.SampleRate()
 	op.ChannelCount = 2
 	op.Format = oto.FormatSignedInt16LE
+	op.BufferSize = 50 * time.Millisecond
 
 	otoCtx, readyChan, err := oto.NewContext(op)
 	if err != nil {
@@ -92,7 +94,7 @@ func main() {
 		*analyzer,
 		func() bool { return !player.IsPlaying() },
 	)
-	ebiten.SetWindowSize(640, 480)
+	ebiten.SetWindowSize(640*2, 480*2)
 	ebiten.SetWindowTitle("Music Visualizer")
 
 	player.Play()

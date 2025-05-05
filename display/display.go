@@ -46,15 +46,16 @@ func (d *Display) Draw(screen *ebiten.Image) {
 			leftValue := math.Abs(probePair[0].Buffer[probeIndex])
 			rightValue := math.Abs(probePair[1].Buffer[probeIndex])
 			pix[4*(y*width+x)] = byte(math.Min(leftValue*256*1, 255))
-			pix[4*(y*width+x)+1] = byte(math.Min(leftValue*256*2, 255))
-			pix[4*(y*width+x)+2] = byte(math.Min(leftValue*256*3, 255))
+			pix[4*(y*width+x)+1] = byte(math.Min(leftValue*256*4, 255))
+			pix[4*(y*width+x)+2] = byte(math.Min(leftValue*256*8, 128))
 			pix[4*(y*width+x)+3] = 0xff
 			pix[4*(y*width+x+halfWidth)] = byte(math.Min(rightValue*256*1, 255))
-			pix[4*(y*width+x+halfWidth)+1] = byte(math.Min(rightValue*256*2, 255))
-			pix[4*(y*width+x+halfWidth)+2] = byte(math.Min(rightValue*256*3, 255))
+			pix[4*(y*width+x+halfWidth)+1] = byte(math.Min(rightValue*256*4, 255))
+			pix[4*(y*width+x+halfWidth)+2] = byte(math.Min(rightValue*256*8, 128))
 			pix[4*(y*width+x+halfWidth)+3] = 0xff
 		}
 	}
+	// log.Fatalf("width: %v, halfWidth: %v, len probepair %v", width, halfWidth, len(d.Analyzer.Probes[100][0].Buffer))
 	screen.WritePixels(pix)
 }
 
