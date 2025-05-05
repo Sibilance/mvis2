@@ -1,20 +1,25 @@
 package analyze
 
+import (
+	math "github.com/chewxy/math32"
+)
+
 type Probe struct {
 	Buffer     []float32
-	Downsample int
 	memory     float32
 	index      int
+	downsample int
 }
 
 func (p *Probe) Analyze(signal []float32) {
 	index := p.index
-	memory := p.memory
+	downsample := p.downsample
+	memory := math.Pow(p.memory, float32(int(1)<<downsample))
 	weight := 1 - memory
 	for _, sample := range signal {
-		p.Buffer[index] = memory*p.Buffer[index] + weight*sample
+		p.Buffer[index>>downsample] = memory*p.Buffer[index>>downsample] + weight*sample
 		index += 1
-		if index == len(p.Buffer) {
+		if index>>downsample == len(p.Buffer) {
 			index = 0
 		}
 	}

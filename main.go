@@ -2,15 +2,15 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"io"
 	"log"
 	"math"
 	"os"
-	"time"
 
 	"github.com/Sibilance/mvis2/analyze"
+	"github.com/Sibilance/mvis2/display"
 	"github.com/ebitengine/oto/v3"
+	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/go-mp3"
 )
 
@@ -87,9 +87,16 @@ func main() {
 
 	player := otoCtx.NewPlayer(sampleExtractor)
 	defer player.Close()
+
+	game := display.NewDisplay(
+		*analyzer,
+		func() bool { return !player.IsPlaying() },
+	)
+	ebiten.SetWindowSize(640, 480)
+	ebiten.SetWindowTitle("Music Visualizer")
+
 	player.Play()
-	for player.IsPlaying() {
-		fmt.Println(analyzer.LeftProbes[0].Buffer)
-		time.Sleep(100 * time.Millisecond)
+	if err := ebiten.RunGame(game); err != nil {
+		log.Fatal(err)
 	}
 }
